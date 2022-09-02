@@ -5,14 +5,33 @@
  * See: https://simplesamlphp.org/docs/stable/simplesamlphp-reference-sp-remote
  */
 
-if (!getenv('SIMPLESAMLPHP_SP_ENTITY_ID')) {
-    throw new UnexpectedValueException('SIMPLESAMLPHP_SP_ENTITY_ID is not defined as an environment variable.');
-}
-if (!getenv('SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE')) {
-    throw new UnexpectedValueException('SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE is not defined as an environment variable.');
+function load_metadata() {
+    $metadata = [];
+
+    if (getenv('SIMPLESAMLPHP_SP_ENTITY_ID') && getenv('SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE')) {
+        $metadata[getenv('SIMPLESAMLPHP_SP_ENTITY_ID')] = [
+            'AssertionConsumerService' => getenv('SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE'),
+            'SingleLogoutService' => getenv('SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE'),
+        ];
+    }
+
+    if (!file_exists('/var/www/simplesamlphp/metadata/sp.json'))
+        return $metadata;
+
+    $json = file_get_contents('/var/www/simplesamlphp/metadata/sp.json');
+    $data = json_decode($json, true);
+
+    if (is_null($data) || !is_array($data))
+        return $metadata;
+
+
+    foreach ($data as $entity_id => $entity_data) {
+        if (!array_key_exists("AssertionConsumerService", $entity_data))
+            throw new UnexpectedValueException("SP metadata is not set for $entity_id");
+
+        $metadata[$entity_id] = $entity_data;
+    }
+    return $metadata;
 }
 
-$metadata[getenv('SIMPLESAMLPHP_SP_ENTITY_ID')] = array(
-    'AssertionConsumerService' => getenv('SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE'),
-    'SingleLogoutService' => getenv('SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE'),
-);
+$metadata = load_metadata();
