@@ -31,6 +31,7 @@ COPY config/simplesamlphp/saml20-sp-remote.php /var/www/simplesamlphp/metadata
 COPY config/simplesamlphp/sp-metadata.php /var/www/simplesamlphp/www
 COPY config/simplesamlphp/server.crt /var/www/simplesamlphp/cert/
 COPY config/simplesamlphp/server.pem /var/www/simplesamlphp/cert/
+COPY config/simplesamlphp/loginuserpass.php /var/www/simplesamlphp/modules/core/www/loginuserpass.php
 
 # Apache
 ENV HTTP_PORT 8080
