@@ -283,6 +283,9 @@ $config = array(
      * ),
      *
      */
+    'module.enable' => array(
+        'exampleauth' => true,
+    ),
 
 
     /*

@@ -20,8 +20,7 @@ LABEL git-revision=$GIT_REVISION \
 ARG SIMPLESAMLPHP_VERSION
 RUN curl -sSL -o /tmp/simplesamlphp.tar.gz https://github.com/simplesamlphp/simplesamlphp/releases/download/v$SIMPLESAMLPHP_VERSION/simplesamlphp-$SIMPLESAMLPHP_VERSION.tar.gz && \
     tar xzf /tmp/simplesamlphp.tar.gz -C /tmp && \
-    mv /tmp/simplesamlphp-* /var/www/simplesamlphp && \
-    touch /var/www/simplesamlphp/modules/exampleauth/enable
+    mv /tmp/simplesamlphp-* /var/www/simplesamlphp
 RUN echo "<?php" > /var/www/simplesamlphp/metadata/shib13-sp-remote.php
 RUN echo '{}' > /var/www/simplesamlphp/metadata/sp.json
 RUN chown www-data /var/www/simplesamlphp/metadata/sp.json
